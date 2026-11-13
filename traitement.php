@@ -47,6 +47,31 @@ if(isset($_POST['titre'])){
             "gif" => "image/gif"
         ];
 
+        // fonction in_array permet de vérifier si un élément se trouve dans le tableau
+        if(!in_array($extension, $extensionAutorisees)){
+            header("Location: index.php?error=4");
+            exit();
+        }
+
+        if(!in_array($_FILES['fichier']['type'], $mimesAutorises)){
+            header("Location: index.php?error=5");
+            exit();
+        }
+
+        // changer le nom du fichier
+        $uniqNameSafe = bin2hex(random_bytes(16)).".".$extension;
+
+        // dosier de destination
+        $dossier = "images/";
+
+        // déplacement du fichier
+        if(move_uploaded_file($tmpPath, $dossier.$uniqNameSafe)){
+            echo $uniqNameSafe;
+        }else{
+            header("Location: index.php?error=6");
+            exit();
+        }
+
     }else{
         // erreur dans le formulaire, redirection vers le form avec GET error
         header("Location: index.php?error=".$error);
